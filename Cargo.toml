@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 accrete = "0.2.0"
+maths-rs = "0.2.5"

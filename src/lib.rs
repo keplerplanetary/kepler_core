@@ -1,10 +1,16 @@
+use maths_rs::{
+    abs,
+    num::SignedNumberOps,
+    prelude::{powf, Vec2},
+    Vec2d,
+};
 
 /// Calculates the gravitational force between two masses.
 ///
 /// usage
 /// ````rust
 /// use planety::gravity_force;
-/// 
+///
 /// let mass_earth = 5.972e24;
 /// let mass_sun = 1.989e30;
 /// let distance = 149597870700.0;
@@ -17,27 +23,24 @@ pub fn gravity_force(mass_a: f64, mass_b: f64, distance: f64) -> f64 {
     g * mass_a * mass_b / (distance.powf(2.0))
 }
 
+pub fn gravity_force_vector(body_a: Body, body_b: Body) -> Vec2d {
+    let mass_a = body_a.mass;
+    let mass_b = body_b.mass;
+    let distance_vec = body_a.position - body_b.position;
+    let distance = (distance_vec.x.powf(2.0) + distance_vec.y.powf(2.0)).powf(0.5);
+
+    Vec2d::new(0.0, 0.0)
+}
+
 pub struct System {
     bodies: Vec<Body>,
 }
 
-
-
-pub struct Body{
+pub struct Body {
     mass: f64,
     name: String,
-    position: CartesianPosition,
-    velocity: CartesianVelocity,
-}
-
-pub struct CartesianPosition{
-    x: f64,
-    y: f64,
-}
-
-pub struct CartesianVelocity{
-    vx: f64,
-    vy: f64,
+    position: Vec2d,
+    velocity: Vec2d,
 }
 
 #[cfg(test)]
