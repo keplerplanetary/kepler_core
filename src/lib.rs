@@ -9,7 +9,7 @@ use maths_rs::{
 ///
 /// usage
 /// ````rust
-/// use planety::gravity_force;
+/// use planety_core::gravity_force;
 ///
 /// let mass_earth = 5.972e24;
 /// let mass_sun = 1.989e30;
