@@ -1,21 +1,16 @@
-use maths_rs::{
-    abs,
-    num::SignedNumberOps,
-    prelude::{powf, Vec2},
-    Vec2d,
-};
+use maths_rs::{length, Vec2d};
 
 /// Calculates the gravitational force between two masses.
 ///
 /// usage
-/// ````rust
+/// ```rust
 /// use planety_core::gravity_force;
 ///
 /// let mass_earth = 5.972e24;
 /// let mass_sun = 1.989e30;
 /// let distance = 149597870700.0;
 /// let result = gravity_force(mass_earth, mass_sun, distance);
-/// ````
+/// ```
 /// F = (G * m1 * m2)/(r*r)
 /// G = 6.674×10−11 m3⋅kg−1⋅s−2
 pub fn gravity_force(mass_a: f64, mass_b: f64, distance: f64) -> f64 {
@@ -27,8 +22,7 @@ pub fn gravity_force_vector(body_a: Body, body_b: Body) -> Vec2d {
     let mass_a = body_a.mass;
     let mass_b = body_b.mass;
     let distance_vec = body_a.position - body_b.position;
-    let distance = (distance_vec.x.powf(2.0) + distance_vec.y.powf(2.0)).powf(0.5);
-
+    let distance = length(body_a.position);
     Vec2d::new(0.0, 0.0)
 }
 
