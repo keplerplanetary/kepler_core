@@ -1,6 +1,3 @@
-use core::time;
-use std::clone;
-
 use maths_rs::{length, Vec2d};
 
 /// Calculates the gravitational force between two masses.
@@ -22,12 +19,18 @@ pub fn gravity_force(mass_a: f64, mass_b: f64, distance: f64) -> f64 {
 
 /// Calculates the gravitational force between two masses in vector form.
 pub fn gravity_force_vector(receiving_body: &Body, exerting_body: &Body) -> Vec2d {
-    let mass_a = receiving_body.mass;
-    let mass_b = exerting_body.mass;
-    let distance_vec = receiving_body.position - exerting_body.position;
-    let distance = length(distance_vec);
-    let unit_vector = distance_vec / distance;
-    unit_vector * gravity_force(mass_a, mass_b, distance) * -1.0
+    if receiving_body == exerting_body {
+        // the force between two identical bodies is 0
+        // if we try to calculate it anyways, it will be f64::Nan.
+        Vec2d::new(0.0, 0.0)
+    } else {
+        let mass_a = receiving_body.mass;
+        let mass_b = exerting_body.mass;
+        let distance_vec = receiving_body.position - exerting_body.position;
+        let distance = length(distance_vec);
+        let unit_vector = distance_vec / distance;
+        unit_vector * gravity_force(mass_a, mass_b, distance) * -1.0
+    }
 }
 
 static G: f64 = 6.674e-11;
@@ -46,7 +49,6 @@ pub fn system_timestep(system: System, timestep: f64) -> System {
         for other in system.bodies.clone() {
             res_force += gravity_force_vector(&body, &other);
         }
-
         // calculate new velocity
         // v_new = v + F/m * dt
         let v_new = body.velocity + res_force / body.mass * timestep;
@@ -60,16 +62,15 @@ pub fn system_timestep(system: System, timestep: f64) -> System {
 
         new_system.bodies.push(new_body);
     }
-    println!("New state {:?}", &new_system);
     new_system
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct System {
     pub bodies: Vec<Body>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Body {
     pub mass: f64,
     pub name: String,
@@ -105,11 +106,14 @@ mod tests {
             ],
         };
 
+        println!("System start\n {:#?}", &system);
+
         let timestep = 3600.0;
         for _ in 0..100 {
-
             system = system_timestep(system, timestep);
         }
+        println!("System end\n {:#?}", &system);
+
         assert!(false);
     }
 
