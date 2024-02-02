@@ -1,3 +1,6 @@
+use core::time;
+use std::clone;
+
 use maths_rs::{length, Vec2d};
 
 /// Calculates the gravitational force between two masses.
@@ -29,10 +32,44 @@ pub fn gravity_force_vector(receiving_body: &Body, exerting_body: &Body) -> Vec2
 
 static G: f64 = 6.674e-11;
 
+pub fn system_timestep(system: System, timestep: f64) -> System {
+    let mut new_system = system.clone();
+    new_system.bodies = vec![];
+
+    // for each body, calculate resulting force
+    // system [a, b, c]
+    // for a: b-a, c-a
+    // for b: b-a, c-b
+    // for c: c-a ,c-b
+    for body in system.bodies.clone() {
+        let mut res_force = Vec2d::new(0.0, 0.0);
+        for other in system.bodies.clone() {
+            res_force += gravity_force_vector(&body, &other);
+        }
+
+        // calculate new velocity
+        // v_new = v + F/m * dt
+        let v_new = body.velocity + res_force / body.mass * timestep;
+        // calculate new position
+        // pos_new = pos + v * dt
+        let pos_new = body.position + v_new * timestep;
+
+        let mut new_body = body.clone();
+        new_body.velocity = v_new;
+        new_body.position = pos_new;
+
+        new_system.bodies.push(new_body);
+    }
+    println!("New state {:?}", &new_system);
+    new_system
+}
+
+#[derive(Clone, Debug)]
 pub struct System {
     pub bodies: Vec<Body>,
 }
 
+#[derive(Clone, Debug)]
 pub struct Body {
     pub mass: f64,
     pub name: String,
@@ -45,14 +82,42 @@ mod tests {
     use super::*;
     use maths_rs::Vec2d;
 
+    static MASS_EARTH: f64 = 5.972e24;
+    static MASS_MOON: f64 = 7.34e22;
+    static MASS_SUN: f64 = 1.989e30;
+
+    #[test]
+    fn test_system_timestep() {
+        let mut system = System {
+            bodies: vec![
+                Body {
+                    name: "Earth".to_owned(),
+                    mass: MASS_EARTH,
+                    position: Vec2d::new(0.0, 0.0),
+                    velocity: Vec2d::new(0.0, 0.0),
+                },
+                Body {
+                    name: "Moon".to_owned(),
+                    mass: MASS_MOON,
+                    position: Vec2d::new(4.0e9, 0.0),
+                    velocity: Vec2d::new(0.0, -5.0e3),
+                },
+            ],
+        };
+
+        let timestep = 3600.0;
+        for _ in 0..100 {
+
+            system = system_timestep(system, timestep);
+        }
+        assert!(false);
+    }
+
     #[test]
     fn force_between_earth_and_sun() {
         let d = 149597870700.0;
 
-        let mass_earth = 5.972e24;
-        let mass_sun = 1.989e30;
-
-        let result = gravity_force(mass_earth, mass_sun, d);
+        let result = gravity_force(MASS_EARTH, MASS_SUN, d);
         assert!(3.5423377e22 > result);
         assert!(3.5423376e22 < result);
     }
