@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 accrete = "0.2.0"
-maths-rs = "0.2.5"
+maths-rs = { version = "0.2.5", features = ["serde"] }
+serde = { version = "1.0.196", features = ["derive"] }

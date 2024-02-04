@@ -1,4 +1,5 @@
 use maths_rs::{length, Vec2d};
+use serde::{Deserialize, Serialize};
 
 /// Calculates the gravitational force between two masses.
 ///
@@ -65,12 +66,12 @@ pub fn system_timestep(system: System, timestep: f64) -> System {
     new_system
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct System {
     pub bodies: Vec<Body>,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Body {
     pub mass: f64,
     pub name: String,
@@ -113,8 +114,6 @@ mod tests {
             system = system_timestep(system, timestep);
         }
         println!("System end\n {:#?}", &system);
-
-        assert!(false);
     }
 
     #[test]
