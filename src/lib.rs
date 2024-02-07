@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// usage
 /// ```rust
-/// use planety_core::gravity_force;
+/// use kepler_core::gravity_force;
 ///
 /// let mass_earth = 5.972e24;
 /// let mass_sun = 1.989e30;
