@@ -1,4 +1,4 @@
-use maths_rs::{length, Vec2d};
+use maths_rs::{dot, length, Vec2d};
 use serde::{Deserialize, Serialize};
 
 /// Calculates the gravitational force between two masses.
@@ -64,6 +64,41 @@ pub fn system_timestep(system: System, timestep: f64) -> System {
         new_system.bodies.push(new_body);
     }
     new_system
+}
+
+pub fn calculate_system_energy(system: System) -> f64 {
+    let mut sum_of_kinetic: f64 = 0.0;
+    let mut sum_of_potential: f64 = 0.0;
+    let mut looped_bodies: Vec<Body> = Vec::new();
+
+    for body in system.bodies {
+        sum_of_kinetic += calculate_kinetic_energy(&body);
+        for other in looped_bodies.iter() {
+            sum_of_potential += calculate_potential_energy(&body, other);
+        }
+        looped_bodies.push(body.clone());
+    }
+
+    sum_of_kinetic + sum_of_potential
+}
+
+pub fn calculate_kinetic_energy(body: &Body) -> f64 {
+    0.5 * body.mass * dot(body.velocity, body.velocity)
+}
+
+pub fn calculate_potential_energy(receiving_body: &Body, exerting_body: &Body) -> f64 {
+    if receiving_body == exerting_body {
+        // the force between two identical bodies is 0
+        // if we try to calculate it anyways, it will be f64::Nan.
+        0.0
+    } else {
+        let mass_a = receiving_body.mass;
+        let mass_b = exerting_body.mass;
+        let distance_vec = receiving_body.position - exerting_body.position;
+        let distance = length(distance_vec).abs();
+
+        (G * mass_a * mass_b / distance) * -1.0
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
