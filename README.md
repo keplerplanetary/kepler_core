@@ -1,5 +1,6 @@
-# Planety
+# Kepler
 
+A planetary motion simulator
 
 
 ## Ideas
