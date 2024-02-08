@@ -6,6 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-accrete = "0.2.0"
 maths-rs = { version = "0.2.5", features = ["serde"] }
 serde = { version = "1.0.196", features = ["derive"] }
