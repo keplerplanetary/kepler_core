@@ -12,7 +12,7 @@ pub fn calculate_total_impulse(system: &System) -> Vec2d {
     system
         .bodies
         .iter()
-        .map(|b| calculate_impulse(b))
+        .map(calculate_impulse)
         .reduce(|vec_sum, v| vec_sum + v)
         .expect("No empty systems")
 }

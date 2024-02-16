@@ -10,7 +10,7 @@ pub fn calculate_system_energy(system: System) -> f64 {
     let sum_of_kinetic: f64 = system
         .bodies
         .iter()
-        .map(|s| calculate_kinetic_energy(s))
+        .map(calculate_kinetic_energy)
         .sum();
 
     let mut looped_bodies: Vec<&Body> = Vec::new();
