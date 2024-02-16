@@ -7,11 +7,10 @@ use crate::{constants::G, types::Body};
 /// usage
 /// ```rust
 /// use kepler_core::force::gravity_force;
+/// use kepler_core::constants::{MASS_EARTH, MASS_SUN};
 ///
-/// let mass_earth = 5.972e24;
-/// let mass_sun = 1.989e30;
 /// let distance = 149597870700.0;
-/// let result = gravity_force(mass_earth, mass_sun, distance);
+/// let result = gravity_force(MASS_EARTH, MASS_SUN, distance);
 /// ```
 /// F = (G * m1 * m2)/(r*r)
 /// G = 6.674×10−11 m3⋅kg−1⋅s−2
