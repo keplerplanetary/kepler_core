@@ -6,7 +6,7 @@ use crate::{
 };
 
 // Calculate the total energy of the system. The total energy is composed of potential energy and kinetic energy and it should be constant over time
-pub fn calculate_system_energy(system: System) -> f64 {
+pub fn calculate_system_energy(system: &System) -> f64 {
     let sum_of_kinetic: f64 = system
         .bodies
         .iter()
