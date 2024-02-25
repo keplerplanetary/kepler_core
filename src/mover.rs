@@ -1,9 +1,12 @@
 use maths_rs::Vec2d;
 
-use crate::{force::gravity_force_vector, types::System};
+use crate::{
+    force::gravity_force_vector,
+    types::{Body, MoverImplementation, SimulationConfig, System},
+};
 
 /// This function maps a system state at time t to a system state at time t + ∆t
-pub fn system_timestep(system: System, timestep: f64) -> System {
+pub fn system_timestep(system: System, timestep: f64, config: SimulationConfig) -> System {
     // we could just initialize a new system here, but then we'd have to copy future fields manually
     let mut new_system = system.clone();
     new_system.bodies = vec![];
@@ -18,21 +21,46 @@ pub fn system_timestep(system: System, timestep: f64) -> System {
         for other in &system.bodies {
             res_force += gravity_force_vector(body, other);
         }
-        // calculate new velocity
-        // v_new = v + F/m * dt
-        let v_new = body.velocity + res_force / body.mass * timestep;
-        // calculate new position
-        // pos_new = pos + v * dt
-        let pos_new = body.position + v_new * timestep;
 
         let mut new_body = body.clone();
-        new_body.velocity = v_new;
-        new_body.position = pos_new;
+
+        match config.mover_implementation {
+            MoverImplementation::EulerExplicit() => {
+                mover_euler_explicit(&mut new_body, res_force, timestep)
+            }
+            MoverImplementation::EulerImplicit() => {
+                mover_euler_implicit(&mut new_body, res_force, timestep)
+            }
+        };
 
         new_system.bodies.push(new_body);
     }
     new_system
 }
+
+///Moves a body with respect to the explicit Euler method
+/// in an explicit moving, the new position and velocities only depend on the old values
+fn mover_euler_explicit(body: &mut Body, force: Vec2d, timestep: f64) {
+    // calculate new position based on old position and velocity
+    // pos_new = pos + v * dt
+    body.position = body.position + body.velocity * timestep;
+    // calculate new velocity based on old velocity and force
+    // v_new = v + F/m * dt
+    body.velocity = body.velocity + force / body.mass * timestep;
+}
+
+///Moves a body with respect to the implicit Euler method
+/// in an implicit moving, the new position and velocities can depend on the old and new values
+fn mover_euler_implicit(body: &mut Body, force: Vec2d, timestep: f64) {
+    // calculate new velocity based on old velocity and force
+    // v_new = v + F/m * dt
+    body.velocity = body.velocity + force / body.mass * timestep;
+    // calculate new position from old position and new velocity
+    // pos_new = pos + v * dt
+    body.position = body.position + body.velocity * timestep;
+}
+
+
 
 #[cfg(test)]
 mod tests {
