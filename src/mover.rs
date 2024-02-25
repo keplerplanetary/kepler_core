@@ -60,8 +60,6 @@ fn mover_euler_implicit(body: &mut Body, force: Vec2d, timestep: f64) {
     body.position = body.position + body.velocity * timestep;
 }
 
-
-
 #[cfg(test)]
 mod tests {
 
@@ -94,7 +92,13 @@ mod tests {
 
         let timestep = 3600.0;
         for _ in 0..100 {
-            system = system_timestep(system, timestep);
+            system = system_timestep(
+                system,
+                timestep,
+                SimulationConfig {
+                    mover_implementation: MoverImplementation::EulerImplicit(),
+                },
+            );
         }
     }
 }
