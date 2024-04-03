@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 maths-rs = { version = "0.2.5", features = ["serde"] }
+nanoid = "0.4.0"
 serde = { version = "1.0.196", features = ["derive"] }

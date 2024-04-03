@@ -1,9 +1,8 @@
-use maths_rs::Vec2d;
-
 use crate::{
     force::gravity_force_vector,
     types::{Body, MoverImplementation, SimulationConfig, System},
 };
+use maths_rs::Vec2d;
 
 /// This function maps a system state at time t to a system state at time t + ∆t
 pub fn system_timestep(system: System, timestep: f64, config: SimulationConfig) -> System {
@@ -62,30 +61,43 @@ fn mover_euler_implicit(body: &mut Body, force: Vec2d, timestep: f64) {
 
 #[cfg(test)]
 mod tests {
-
+    use super::*;
     use crate::{
         constants::{MASS_EARTH, MASS_MOON},
-        types::Body,
+        types::{Body, Color},
     };
-
-    use super::*;
     use maths_rs::Vec2d;
+    use nanoid::nanoid;
 
     #[test]
     fn test_system_timestep() {
         let mut system = System {
             bodies: vec![
                 Body {
+                    id: nanoid!(),
                     name: "Earth".to_owned(),
                     mass: MASS_EARTH,
                     position: Vec2d::new(0.0, 0.0),
                     velocity: Vec2d::new(0.0, 0.0),
+                    color: Color {
+                        r: 15,
+                        g: 212,
+                        b: 153,
+                    },
+                    diameter: 5.631e9,
                 },
                 Body {
+                    id: nanoid!(),
                     name: "Moon".to_owned(),
                     mass: MASS_MOON,
                     position: Vec2d::new(4.0e9, 0.0),
                     velocity: Vec2d::new(0.0, -5.0e3),
+                    color: Color {
+                        r: 15,
+                        g: 212,
+                        b: 153,
+                    },
+                    diameter: 5.631e9,
                 },
             ],
         };
