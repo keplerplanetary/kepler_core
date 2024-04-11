@@ -37,11 +37,12 @@ pub fn gravity_force_vector(receiving_body: &Body, exerting_body: &Body) -> Vec2
 #[cfg(test)]
 mod tests {
     use maths_rs::Vec2d;
+    use nanoid::nanoid;
 
     use crate::{
         constants::{MASS_EARTH, MASS_SUN},
         force::{gravity_force, gravity_force_vector},
-        types::Body,
+        types::{Body, Color},
     };
 
     #[test]
@@ -56,16 +57,30 @@ mod tests {
     #[test]
     fn force_between_earth_and_sun_vector() {
         let body_a = Body {
+            id: nanoid!(),
             mass: 5.972e24,
             name: "Earth".to_owned(),
             position: Vec2d::new(1.495978707e11, 0.0),
             velocity: Vec2d::new(0.0, 2.98e7),
+            color: Color {
+                r: 45,
+                g: 45,
+                b: 45,
+            },
+            diameter: 2.0e6,
         };
         let body_b = Body {
+            id: nanoid!(),
             mass: 1.989e30,
             name: "Sun".to_owned(),
             position: Vec2d::new(0.0, 0.0),
             velocity: Vec2d::new(0.0, 0.0),
+            color: Color {
+                r: 15,
+                g: 212,
+                b: 153,
+            },
+            diameter: 5.631e9,
         };
         let result = gravity_force_vector(&body_a, &body_b);
         let distance_vec = body_a.position - body_b.position;
