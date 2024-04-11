@@ -42,10 +42,10 @@ pub fn system_timestep(system: System, timestep: f64, config: SimulationConfig) 
 fn mover_euler_explicit(body: &mut Body, force: Vec2d, timestep: f64) {
     // calculate new position based on old position and velocity
     // pos_new = pos + v * dt
-    body.position = body.position + body.velocity * timestep;
+    body.position += body.velocity * timestep;
     // calculate new velocity based on old velocity and force
     // v_new = v + F/m * dt
-    body.velocity = body.velocity + force / body.mass * timestep;
+    body.velocity += force / body.mass * timestep;
 }
 
 ///Moves a body with respect to the implicit Euler method
@@ -53,10 +53,10 @@ fn mover_euler_explicit(body: &mut Body, force: Vec2d, timestep: f64) {
 fn mover_euler_implicit(body: &mut Body, force: Vec2d, timestep: f64) {
     // calculate new velocity based on old velocity and force
     // v_new = v + F/m * dt
-    body.velocity = body.velocity + force / body.mass * timestep;
+    body.velocity += force / body.mass * timestep;
     // calculate new position from old position and new velocity
     // pos_new = pos + v * dt
-    body.position = body.position + body.velocity * timestep;
+    body.position += body.velocity * timestep;
 }
 
 #[cfg(test)]
